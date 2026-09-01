@@ -1,0 +1,14 @@
+package com.rimworldcraft.core.api.types;
+
+/** Canonical platform-neutral grid position. */
+public record GridPosition(int x, int y, int z) {
+    /** Returns a translated position. */
+    public GridPosition add(int dx, int dy, int dz) { return new GridPosition(x + dx, y + dy, z + dz); }
+    /** Returns Euclidean distance to another position. */
+    public double distance(GridPosition other) {
+        long dx = (long) x - other.x;
+        long dy = (long) y - other.y;
+        long dz = (long) z - other.z;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+}

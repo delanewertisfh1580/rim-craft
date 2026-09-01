@@ -11,4 +11,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "RimWorldCraft"
+// Active JVM modules only. Forge and auxiliary test modules require future wiring.
 include("core-api", "core-impl", "infrastructure-common")
