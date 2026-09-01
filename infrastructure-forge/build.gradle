@@ -1,0 +1,18 @@
+plugins {
+    id 'java-library'
+}
+
+def forgeVersion = providers.gradleProperty('forgeVersion').orElse('1.20.1-47.2.0')
+
+dependencies {
+    api project(':core-api')
+    implementation project(':core-impl')
+    implementation project(':infrastructure-common')
+    // Enable after ForgeGradle and a concrete Minecraft mappings setup are selected:
+    // implementation "net.minecraftforge:forge:${forgeVersion.get()}"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}

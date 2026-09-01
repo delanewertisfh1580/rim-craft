@@ -1,0 +1,10 @@
+plugins { id 'java' }
+dependencies {
+    testImplementation project(':core-api')
+    testImplementation project(':core-impl')
+    testImplementation project(':infrastructure-common')
+    testImplementation project(':infrastructure-forge')
+    testImplementation project(':test-common')
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}"
+}

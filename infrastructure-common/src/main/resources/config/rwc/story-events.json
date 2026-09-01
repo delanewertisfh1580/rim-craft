@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "events": [
+    {"id": "raider_wave", "type": "RAID", "weight": 10, "cooldownTicks": 24000},
+    {"id": "trade_caravan", "type": "TRADE", "weight": 6, "cooldownTicks": 12000}
+  ]
+}

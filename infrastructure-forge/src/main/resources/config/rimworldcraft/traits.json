@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "traits": [
+    {"id": "optimist", "displayName": "Optimist", "moodModifier": 6}
+  ]
+}

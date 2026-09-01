@@ -1,0 +1,6 @@
+plugins { id 'java' }
+dependencies {
+    testImplementation project(':core-api')
+    testImplementation project(':core-impl')
+    testImplementation project(':test-common')
+}

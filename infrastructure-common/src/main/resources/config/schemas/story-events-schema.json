@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schemaVersion", "events"],
+  "properties": {
+    "schemaVersion": {"type": "integer", "minimum": 1},
+    "events": {"type": "array", "items": {"type": "object", "required": ["id", "type", "weight"], "properties": {"id": {"type": "string", "minLength": 1}, "type": {"type": "string", "minLength": 1}, "weight": {"type": "number", "minimum": 0}}, "additionalProperties": false}}
+  },
+  "additionalProperties": false
+}
