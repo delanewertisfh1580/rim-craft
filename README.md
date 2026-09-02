@@ -29,13 +29,14 @@ See `documentation-consistency-report.md` for the full terminology and contradic
 - Immutable domain events and platform-neutral ports.
 - Validated shared identifiers: `WorldId`, `ColonyId`, `CitizenId`, `PlayerId`, `RegionId`, `IncidentId`, `ContentId`, `CommandId`.
 - `GameTick`, `SchemaVersion`, and canonical `GridPosition` value objects.
-- Early Colony/Citizen/Storyteller/Building aggregates and tests.
-- JSON syntax/schemaVersion validation and JSON save seams.
+- Early Colony/Citizen/Building aggregates and platform-neutral World/Storyteller contexts with deterministic tests.
+- Player Context authority boundary with world-scoped membership, permissions, replay-safe commands, selection cleanup, and immutable Player views.
+- JSON syntax/schemaVersion validation, JSON save seams, and Storyteller/Goal AI snapshot mappers.
 - Java 17 toolchain configuration.
 
 ## Known stubs and boundaries
 
-Forge/Minecraft entities, NBT round-tripping, Baritone pathfinding, multiplayer packets, rendering, mod metadata, and runtime launch tasks are **Pending/Blocked** until platform wiring is explicitly requested and dependency/mappings are confirmed. The current code must not be described as a complete Forge mod.
+Forge/Minecraft entities, NBT round-tripping, Baritone pathfinding, packet normalization/multiplayer runtime, rendering, mod metadata, and runtime launch tasks are **Pending/Blocked** until platform wiring is explicitly requested and dependency/mappings are confirmed. The Player Context currently verifies normalized server-side commands in JVM tests; it does not authenticate accounts or decode packets. The current code must not be described as a complete Forge mod.
 
 ## Build and test
 
@@ -53,7 +54,7 @@ The environment used for this stabilization did not provide a system Gradle exec
 ## Roadmap
 
 - **P0:** commit/verify Gradle 8 wrapper, split multi-public-type files, stabilize typed repositories and atomic resource reservation, add safe architecture/config/event checks.
-- **P1:** migrate packages to `core.shared` and bounded-context `port.in`/`port.out`, add complete contract tests and coverage baselines.
+- **P1:** complete Player runtime adapters, migrate packages to bounded-context `port.in`/`port.out`, and add architecture/coverage baselines.
 - **P2:** confirm ForgeGradle and mappings, then implement infrastructure-forge wiring, NBT persistence, entity binding, Baritone integration, and multiplayer validation.
 
 See `implementation-status.md` for the evidence-based status matrix and limitations.

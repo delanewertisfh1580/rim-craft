@@ -1,0 +1,1 @@
+{"$schema":"rwc://schemas/pathfinder-settings.schema.json","schemaVersion":1,"data":{"maxSearchNodes":10000,"allowDiagonal":false}}

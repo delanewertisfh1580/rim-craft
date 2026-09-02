@@ -9,4 +9,16 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "org.assertj:assertj-core:${assertjVersion}"
+    testImplementation "com.tngtech.archunit:archunit-junit5:${archunitVersion}"
 }
+
+tasks.register('architectureTest', Test) {
+    description = 'Runs executable ArchUnit rules'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    filter { includeTestsMatching '*ArchitectureTest' }
+    useJUnitPlatform { includeTags 'architecture' }
+}
+
+check.dependsOn tasks.named('architectureTest')

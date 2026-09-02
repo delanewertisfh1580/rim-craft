@@ -14,6 +14,10 @@ All public Core data contracts use the canonical immutable value objects from `c
 
 Every world-scoped query includes `WorldId`. Cross-context APIs exchange IDs, summaries, and immutable DTOs rather than foreign aggregates. `Position` remains a compatibility type only; new contracts use `GridPosition`.
 
+## Persistence contract
+
+Platform-neutral persistence uses `com.rimworldcraft.core.persistence.SaveDocument`, `SaveKey`, `AggregateVersion`, `SnapshotMapper`, and `SaveMigration`. `JsonSaveLoadPort` is the current JSON boundary; `JsonFileSaveAdapter` performs atomic temp-file replacement, quarantine of malformed files, and last-known-good fallback. Domain aggregates do not expose persistence methods. NBT remains a future adapter only after the JSON contract is stable.
+
 ## 1. Введение
 
 `data-interfaces.md` — единый источник правды для интерфейсов доступа к данным RimWorldCraft. Документ определяет контракты репозиториев, фабрик и спецификаций, но не конкретные способы хранения. Реализация может использовать NBT, JSON-файлы, память или другой backend без изменения Core.

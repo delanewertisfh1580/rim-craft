@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.rimworldcraft.core.events.InMemoryEventBusTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-09-02T17:24:28" hostname="65dfffa5-3b1c-4bc8-a694-529d23ec377c" time="0.01">
+  <properties/>
+  <testcase name="failingHandlerIsRetriedAndDeadLetteredWithoutBlockingOther()" classname="com.rimworldcraft.core.events.InMemoryEventBusTest" time="0.004"/>
+  <testcase name="typedMandatoryPayloadsConstruct()" classname="com.rimworldcraft.core.events.InMemoryEventBusTest" time="0.0"/>
+  <testcase name="synchronousDeliveryAndUnsubscribe()" classname="com.rimworldcraft.core.events.InMemoryEventBusTest" time="0.002"/>
+  <testcase name="idempotencyAndOrderingAreEnforced()" classname="com.rimworldcraft.core.events.InMemoryEventBusTest" time="0.0"/>
+  <testcase name="unknownSchemaGoesToDeadLetter()" classname="com.rimworldcraft.core.events.InMemoryEventBusTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

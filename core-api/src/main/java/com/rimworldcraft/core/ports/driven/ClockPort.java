@@ -1,9 +1,7 @@
 package com.rimworldcraft.core.ports.driven;
 
-import com.rimworldcraft.core.api.types.GameTick;
+import com.rimworldcraft.core.shared.WorldId;
+import com.rimworldcraft.core.shared.GameTick;
 
-/** Supplies deterministic simulation time to application services. */
-public interface ClockPort {
-    /** Returns the current simulation tick. */
-    GameTick currentTick();
-}
+/** Supplies simulation time; domain code never reads system time. */
+public interface ClockPort { GameTick currentTick(WorldId worldId); }

@@ -3,6 +3,7 @@ package com.rimworldcraft.core.ports.driven;
 import com.rimworldcraft.core.api.types.ColonyId;
 import com.rimworldcraft.core.api.types.WorldId;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /** Driven persistence port owned by the Colony context. */
@@ -16,6 +17,13 @@ public interface ColonyRepository {
     /** Lists active colonies in a world scope. */
     List<ColonyRecord> findAllActive(WorldId worldId);
 
-    /** Immutable persistence-neutral colony record. */
-    record ColonyRecord(WorldId worldId, ColonyId colonyId, String name, boolean active) { }
+    /** Immutable persistence-neutral Colony snapshot. */
+    record ColonyRecord(WorldId worldId, ColonyId colonyId, String name, boolean active) {
+        /** Validates snapshot identity and name. */
+        public ColonyRecord {
+            Objects.requireNonNull(worldId, "worldId");
+            Objects.requireNonNull(colonyId, "colonyId");
+            if (name == null || name.isBlank()) throw new IllegalArgumentException("name must not be blank");
+        }
+    }
 }

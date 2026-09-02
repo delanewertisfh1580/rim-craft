@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"rwc://schemas/config-envelope.schema.json","type":"object","required":["$schema","schemaVersion","data"],"additionalProperties":false,"properties":{"$schema":{"type":"string","minLength":1},"schemaVersion":{"type":"integer","minimum":1},"data":{"type":"object"}}}

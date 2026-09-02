@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.rimworldcraft.core.player.PlayerContextTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-09-02T17:24:28" hostname="65dfffa5-3b1c-4bc8-a694-529d23ec377c" time="0.077">
+  <properties/>
+  <testcase name="replayReturnsOriginalDecisionAndDoesNotPublishAgain()" classname="com.rimworldcraft.core.player.PlayerContextTest" time="0.006"/>
+  <testcase name="registrationUsesNormalizedIdentityAndRejectsInvalidIdentity()" classname="com.rimworldcraft.core.player.PlayerContextTest" time="0.001"/>
+  <testcase name="nonMemberCannotAuthorizeCommandForWrongColony()" classname="com.rimworldcraft.core.player.PlayerContextTest" time="0.0"/>
+  <testcase name="leavingColonyCleansSelection()" classname="com.rimworldcraft.core.player.PlayerContextTest" time="0.002"/>
+  <testcase name="controlModeRequiresPermission()" classname="com.rimworldcraft.core.player.PlayerContextTest" time="0.065"/>
+  <testcase name="permissionChangesAreServerSideAndAffectSubsequentCommands()" classname="com.rimworldcraft.core.player.PlayerContextTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

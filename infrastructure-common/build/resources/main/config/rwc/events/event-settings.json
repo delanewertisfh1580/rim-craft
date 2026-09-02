@@ -1,0 +1,1 @@
+{"$schema":"rwc://schemas/event-settings.schema.json","schemaVersion":1,"data":{"deliveryMode":"SYNCHRONOUS","maxHandlerRetries":3,"queueCapacity":1000}}

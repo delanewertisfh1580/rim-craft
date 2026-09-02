@@ -64,7 +64,7 @@ read all -> parse all -> schema validate -> semantic validate -> migrate -> buil
 
 ### 1.3 Рекомендуемый механизм валидации
 
-В production рекомендуется использовать JSON Schema draft 2020-12 совместно с существующей JSON-библиотекой проекта (например, Jackson или Gson, согласно фактическому build setup). Название библиотеки-валидатора фиксируется в build configuration и не является частью Core API.
+В production используется JSON Schema draft 2020-12 через NetworkNT `json-schema-validator:1.5.6`, зафиксированный в `infrastructure-common/build.gradle`. Jackson используется только для parsing/mapping; validator не является частью Core API.
 
 Проверки делятся на:
 

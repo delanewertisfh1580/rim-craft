@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.rimworldcraft.infrastructure.common.ConfigurationSmokeTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-09-02T17:24:31" hostname="65dfffa5-3b1c-4bc8-a694-529d23ec377c" time="0.22">
+  <properties/>
+  <testcase name="semanticValidatorRejectsDuplicateAndUnknownReference()" classname="com.rimworldcraft.infrastructure.common.ConfigurationSmokeTest" time="0.1"/>
+  <testcase name="negativeAndBoundaryValuesAreCheckedBySchema()" classname="com.rimworldcraft.infrastructure.common.ConfigurationSmokeTest" time="0.097"/>
+  <testcase name="snapshotAndPublisherAreImmutableByReplacement()" classname="com.rimworldcraft.infrastructure.common.ConfigurationSmokeTest" time="0.01"/>
+  <testcase name="mutatorDoesNotChangeOriginal()" classname="com.rimworldcraft.infrastructure.common.ConfigurationSmokeTest" time="0.006"/>
+  <testcase name="schemaRejectsMissingFieldAndWrongType()" classname="com.rimworldcraft.infrastructure.common.ConfigurationSmokeTest" time="0.001"/>
+  <testcase name="corruptFileIsRejected()" classname="com.rimworldcraft.infrastructure.common.ConfigurationSmokeTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+]]></system-err>
+</testsuite>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.rimworldcraft.infrastructure.common.JsonSaveAdapterTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-09-02T09:03:45" hostname="65dfffa5-3b1c-4bc8-a694-529d23ec377c" time="0.014">
+<testsuite name="com.rimworldcraft.infrastructure.common.JsonSaveAdapterTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-09-02T17:24:32" hostname="65dfffa5-3b1c-4bc8-a694-529d23ec377c" time="0.014">
   <properties/>
-  <testcase name="deleteColony_shouldRemoveSave()" classname="com.rimworldcraft.infrastructure.common.JsonSaveAdapterTest" time="0.009"/>
+  <testcase name="deleteColony_shouldRemoveSave()" classname="com.rimworldcraft.infrastructure.common.JsonSaveAdapterTest" time="0.01"/>
   <testcase name="saveColony_shouldCreateColonyDocument()" classname="com.rimworldcraft.infrastructure.common.JsonSaveAdapterTest" time="0.004"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

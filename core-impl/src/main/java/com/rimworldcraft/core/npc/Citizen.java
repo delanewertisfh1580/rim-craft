@@ -17,7 +17,5 @@ public final class Citizen {
     /** Assigns a current task. */ public void assignTask(String task){currentTask=task;}
     /** Marks the citizen dead. */ public List<DomainEvent> die(String cause){if(!alive)return List.of(); alive=false; currentTask=null; return List.of(new NPCDeathEvent(citizenId));}
     /** Moves the projected citizen. */ public void moveTo(Position next){position=Objects.requireNonNull(next);}
-    /** Persistence hook for a future adapter. */ public void writeToNbt(Object tag){throw new UnsupportedOperationException("Implement persistence adapter");}
-    /** Persistence hook for a future adapter. */ public static Citizen readFromNbt(Object tag){throw new UnsupportedOperationException("Implement persistence adapter");}
     private static String requireText(String value){if(value==null||value.isBlank())throw new IllegalArgumentException("text");return value;}
 }

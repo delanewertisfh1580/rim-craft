@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.rimworldcraft.core.goal.GoalAiContextTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-09-02T17:24:28" hostname="65dfffa5-3b1c-4bc8-a694-529d23ec377c" time="0.065">
+  <properties/>
+  <testcase name="timeoutCancelsIntentAndPublishesTypedFailure()" classname="com.rimworldcraft.core.goal.GoalAiContextTest" time="0.006"/>
+  <testcase name="goalSelectionUsesConfiguredPriorityAndStableTieBreaking()" classname="com.rimworldcraft.core.goal.GoalAiContextTest" time="0.001"/>
+  <testcase name="plannerHonoursMaximumDepthAndDeterministicEffects()" classname="com.rimworldcraft.core.goal.GoalAiContextTest" time="0.048"/>
+  <testcase name="acceptanceFlowRoutesBuildThroughPathAndBuildingPorts()" classname="com.rimworldcraft.core.goal.GoalAiContextTest" time="0.001"/>
+  <testcase name="repeatedPlanningIsBoundedByConfig()" classname="com.rimworldcraft.core.goal.GoalAiContextTest" time="0.001"/>
+  <testcase name="saveDocumentRoundTripRestoresPlanAndExecutionCursor()" classname="com.rimworldcraft.core.goal.GoalAiContextTest" time="0.007"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

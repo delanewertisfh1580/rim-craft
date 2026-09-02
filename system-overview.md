@@ -137,17 +137,19 @@ Core является центром приложения. Входящие ад
 
 - **Пакет:** `core.storyteller`
 - **Агрегат:** `Storyteller`
-- **Ответственность:** pacing, адаптивная сложность, storyteller incidents, cooldowns и eligibility rules.
+- **Ответственность:** pacing, threat budget, адаптивная сложность, storyteller incidents, cooldowns и eligibility rules.
+- **JVM boundary:** `StorytellerApplicationService`, immutable incident definitions, deterministic weighted selection, spawn-entry intent, postponement/retry result, outcome idempotency, and `StorytellerSnapshotMapper`.
 - **События:** `IncidentScheduled`, `RaidGenerated`, `FireStarted`, `RewardGranted`.
-- **Интеграция:** читает состояние Colony/NPC/World через query ports и не изменяет их напрямую.
+- **Интеграция:** читает `StorytellerColonySummary`, `StorytellerPopulationSummary` и `WorldSnapshot` через query ports и не изменяет чужие агрегаты напрямую.
 
 ### World Context
 
 - **Пакет:** `core.world`
-- **Агрегат:** `WorldRegion` или `MapSnapshot`
-- **Ответственность:** доступность клеток, климатические факторы, ресурсы, угрозы и географические ограничения.
+- **Агрегат:** `WorldRegion` / immutable `WorldSnapshot`
+- **Ответственность:** доступность клеток, terrain/climate/resource/hazard facts, spawn candidates и settlement validation.
+- **JVM boundary:** `WorldSnapshotPort`, `WorldContextService`, immutable facts, world-scope checks, and typed settlement validation reasons.
 - **События:** `RegionDiscovered`, `ResourceLocated`, `ThreatDetected`, `WeatherChanged`.
-- **Интеграция:** Minecraft-адаптер поставляет факты, но Core хранит только необходимые абстрактные данные.
+- **Интеграция:** Minecraft-адаптер в будущем поставляет facts; текущий Core хранит только необходимые абстрактные данные.
 
 ### Player Context
 

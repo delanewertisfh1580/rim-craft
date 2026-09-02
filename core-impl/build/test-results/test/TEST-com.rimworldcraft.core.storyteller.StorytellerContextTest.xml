@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.rimworldcraft.core.storyteller.StorytellerContextTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-09-02T17:24:28" hostname="65dfffa5-3b1c-4bc8-a694-529d23ec377c" time="0.016">
+  <properties/>
+  <testcase name="snapshotMapperRoundTripsAndRejectsFutureSchema()" classname="com.rimworldcraft.core.storyteller.StorytellerContextTest" time="0.005"/>
+  <testcase name="pacingCooldownAndMissingEntryPointPostponeWithoutMutation()" classname="com.rimworldcraft.core.storyteller.StorytellerContextTest" time="0.006"/>
+  <testcase name="weightedSelectionIsSeededAndSchedulesPlatformNeutralIntent()" classname="com.rimworldcraft.core.storyteller.StorytellerContextTest" time="0.004"/>
+  <testcase name="incidentOutcomeIsIdempotentAndSuccessfulOutcomeRestoresBudget()" classname="com.rimworldcraft.core.storyteller.StorytellerContextTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

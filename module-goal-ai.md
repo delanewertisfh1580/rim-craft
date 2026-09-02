@@ -1355,9 +1355,24 @@ HTN task decomposes compound goal (`BuildHouse`) в subtasks (`GatherWood`, `Bui
 - log содержит `citizenId`, `planId`, `actionExecutionId`, `correlationId`, но не Minecraft object dump;
 - метрики: planning latency, expanded nodes, replans, failed actions, stuck NPC, timeout count.
 
-## 20. Связи с другими документами
+## 20. JVM skeleton implementation
+
+The active JVM implementation uses the canonical transitional package `com.rimworldcraft.core.goal` while the wider context migration is staged. The following contracts are implemented without platform dependencies:
+
+- `Goal`, `ActionDefinition`, `StateFact`, `WorldState`, `Plan`, and `Task` are immutable records;
+- `PriorityEvaluator`, `GoalSelector`, `WorldStateObserver`, `GOAPPlanner`, `ActionExecutor`, `PlanMonitor`, `ReplanningTrigger`, and `FailureHandler` are explicit interfaces;
+- `Preconditions` and `Effects` are pure state helpers;
+- `DefaultGoalAiService` is the constructor-injected stateful application service;
+- `GoalActionIntentPort`, `PathfindingIntentPort`, and `BuildTaskIntentPort` are driven boundaries;
+- `GoalAiConfig` is the immutable configuration boundary;
+- `CitizenAIState` and `GoalAiSnapshotMapper` provide JSON `SaveDocument` hydration.
+
+The service retains at most one active action, uses explicit simulation ticks, cancels timed-out intents, emits typed `PlanFailureEvent`, and caps plan depth, retries, and replans. The acceptance test uses recording ports to prove the build flow without claiming real Minecraft movement or block placement.
+
+## 21. Связи с другими документами
 
 - [`system-overview.md`](system-overview.md) — контейнеры, общие порты, server authority и simulation lifecycle.
+- [`goal-ai-compliance-report.md`](goal-ai-compliance-report.md) — evidence for the current JVM MVP and pending production adapters.
 - [`bounded-contexts.md`](bounded-contexts.md) — границы NPC/Colony/World/Player/Storyteller и правила межконтекстных событий.
 - [`hexagonal-architecture.md`](hexagonal-architecture.md) — driving/driven ports, DI, adapter mapping и Core isolation.
 - [`data-dictionaries.md`](data-dictionaries.md) — JSON conventions, schema versioning и связанные config files.

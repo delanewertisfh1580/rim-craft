@@ -2,7 +2,7 @@
 
 ## 1. Введение
 
-`NPC Core` — bounded context, отвечающий за индивидуальную жизнь, состояние и поведение неигровых персонажей RimWorldCraft. Он поддерживает колонистов, врагов, торговцев и другие типы NPC, но не является владельцем Minecraft-сущностей: Minecraft entity — техническая проекция доменного `Citizen` или другого NPC.
+`NPC Core` — bounded context, отвечающий за индивидуальную жизнь, состояние и поведение граждан RimWorldCraft. Canonical aggregate term is `Citizen`; broader NPC roles remain a documented extension boundary. Он поддерживает колонистов, врагов, торговцев и другие типы NPC, но не является владельцем Minecraft-сущностей: Minecraft entity — техническая проекция доменного `Citizen` или другого NPC.
 
 Модуль реализуется внутри `core.npc` и следует правилам из [`system-overview.md`](system-overview.md), [`bounded-contexts.md`](bounded-contexts.md), [`hexagonal-architecture.md`](hexagonal-architecture.md), [`data-dictionaries.md`](data-dictionaries.md) и [`module-colony-manager.md`](module-colony-manager.md), если этот документ будет добавлен под таким именем.
 
@@ -1247,7 +1247,13 @@ Feature: NPC mood
 - integration tests run for NBT and JSON fixtures;
 - ArchUnit runs in CI.
 
-## 15. DoD модуля NPC
+## 15. Current implementation status
+
+The JVM MVP implements the canonical `Citizen` aggregate, immutable need/mood/health/trait/skill/job models, deterministic simulation seams, lifecycle guards, typed job completion events, and application orchestration. Configuration hydration, relationships, persistence, idempotent command storage, and Minecraft adapters remain Planned/Pending.
+
+See [`npc-compliance-report.md`](npc-compliance-report.md) for evidence.
+
+## 16. DoD модуля NPC
 
 - [ ] Все агрегаты покрыты юнит-тестами с покрытием **не менее 85%**.
 - [ ] Все доменные сервисы покрыты юнит-тестами, включая успешные, ошибочные и повторные сценарии.

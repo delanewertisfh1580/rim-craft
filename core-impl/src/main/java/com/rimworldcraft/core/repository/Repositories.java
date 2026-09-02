@@ -1,6 +1,7 @@
 package com.rimworldcraft.core.repository;
 
 import com.rimworldcraft.core.api.types.*;
+import com.rimworldcraft.core.building.BuildOrderStatus;
 import com.rimworldcraft.core.building.*;
 import com.rimworldcraft.core.colony.Colony;
 import com.rimworldcraft.core.npc.Citizen;

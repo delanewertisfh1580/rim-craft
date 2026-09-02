@@ -1,0 +1,1 @@
+{"$schema":"rwc://schemas/building/blueprints.schema.json","schemaVersion":1,"data":{"blueprints":[{"id":"rwc:wall","name":"Wall","description":"Basic wall","dimensions":{"width":1,"height":1,"depth":1},"costs":{"WOOD":2},"blocks":{"0":"minecraft:oak_planks"},"estimatedTicks":20}]}}

@@ -726,6 +726,12 @@ public final class GhostBlockPlacedEvent extends DomainEvent {
 
 Building/World projections, UI and Goal AI subscribe. Entity/block adapter materializes ghost marker; Core event contains no Minecraft `BlockState`.
 
+## 7. Canonical JVM implementation
+
+The active JVM skeleton uses `com.rimworldcraft.core.events.EventEnvelope`, `EventHandler`, `Subscription`, `EventDeliveryPolicy`, `DeadLetter`, and `com.rimworldcraft.core.ports.driven.EventBusPort`. `InMemoryEventBus` is the single in-process implementation. It delivers synchronously, requires explicit handler IDs, supports closeable subscriptions, bounded retries, dead letters, processed-event idempotency, aggregate-stream sequence ordering, and rejection of unknown schema versions. Typed mandatory payload contracts are grouped in `TypedEventContracts` for ColonyFounded, WorkAssigned, JobCompleted, NpcDied, and RaidGenerated.
+
+Handlers receive envelopes and may call their own context's application port only; they must not import or mutate foreign aggregates. Async queues, durable outbox/event store, and Minecraft adapters remain Planned.
+
 ## 7. Порт `IEventBusPort` и реализация
 
 ### 7.1 Порт
@@ -1343,6 +1349,10 @@ event_bus.handler_duration_ms
 - `testing-strategy.md` — contract, integration и acceptance testing.
 - `archunit-rules.md` — полный executable набор architectural constraints.
 
-## 20. Итоговая гарантия системы
+## 20. Compliance status
+
+Implemented evidence is recorded in [`event-system-compliance-report.md`](event-system-compliance-report.md). The current MVP guarantees synchronous best-effort delivery, explicit registration/lifecycle, retry/dead-letter behavior, idempotency, per-stream ordering, and schema rejection. Full cross-context production handlers and durable persistence remain Pending.
+
+## 21. Итоговая гарантия системы
 
 Event System RimWorldCraft предоставляет best-effort, versioned и observable delivery domain facts. Он отделяет контексты, но не скрывает границы владения: NPC Core остаётся владельцем NPC state, Colony — membership/resources, Building — build orders, Storyteller — incidents, Goal AI — plans/tasks. Для надёжности каждый handler должен быть идемпотентным, каждое событие — иметь стабильную metadata, а каждая критичная цепочка — быть покрыта integration test.
