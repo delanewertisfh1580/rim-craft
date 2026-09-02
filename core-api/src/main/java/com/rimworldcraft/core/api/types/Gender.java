@@ -1,4 +1,4 @@
 package com.rimworldcraft.core.api.types;
 
-/** Citizen gender categories used by the domain model. */
+/** Canonical citizen gender categories used by the platform-neutral domain model. */
 public enum Gender { MALE, FEMALE, NON_BINARY, UNKNOWN }

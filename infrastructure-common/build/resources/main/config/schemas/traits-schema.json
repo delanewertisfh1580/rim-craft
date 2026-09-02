@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schemaVersion", "traits"],
+  "properties": {
+    "schemaVersion": {"type": "integer", "minimum": 1},
+    "traits": {"type": "array", "items": {"type": "object", "required": ["id", "name", "effects"], "properties": {"id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1}, "effects": {"type": "object", "additionalProperties": {"type": "integer"}}}, "additionalProperties": false}}
+  },
+  "additionalProperties": false
+}

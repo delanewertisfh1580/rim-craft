@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "traits": [
+    {"id": "optimist", "name": "Optimist", "effects": {"moodOffset": 6}},
+    {"id": "builder", "name": "Builder", "effects": {"constructionSpeed": 15}}
+  ]
+}

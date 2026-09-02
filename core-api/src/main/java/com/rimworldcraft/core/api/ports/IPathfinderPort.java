@@ -6,10 +6,16 @@ import com.rimworldcraft.core.api.types.Position;
 import java.util.Optional;
 import java.util.UUID;
 
-/** Calculates routes without exposing a concrete navigation library. */
+/**
+ * Legacy compatibility pathfinding port.
+ *
+ * @deprecated Use {@code com.rimworldcraft.core.ports.driven.PathfindingPort}
+ * with {@code WorldId} and {@code GridPosition}.
+ */
+@Deprecated(forRemoval = false)
 public interface IPathfinderPort {
-    /** Finds a route between two positions. */
+    /** Finds a route between legacy positions. */
     Optional<Path> findPath(Position start, Position target, PathfinderContext context);
-    /** Cancels an active request associated with an entity. */
+    /** Cancels a request associated with an external entity identifier. */
     void cancelPath(UUID entityId);
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.rimworldcraft.core.api.types.SharedKernelValueObjectsTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-09-02T09:03:41" hostname="65dfffa5-3b1c-4bc8-a694-529d23ec377c" time="0.025">
+  <properties/>
+  <testcase name="numericValuesRejectInvalidRanges()" classname="com.rimworldcraft.core.api.types.SharedKernelValueObjectsTest" time="0.015"/>
+  <testcase name="contentIdRequiresNamespacedNonBlankValue()" classname="com.rimworldcraft.core.api.types.SharedKernelValueObjectsTest" time="0.001"/>
+  <testcase name="positionIsImmutableAndValidatesDistanceArgument()" classname="com.rimworldcraft.core.api.types.SharedKernelValueObjectsTest" time="0.002"/>
+  <testcase name="worldScopeIsPartOfIdentityBoundary()" classname="com.rimworldcraft.core.api.types.SharedKernelValueObjectsTest" time="0.001"/>
+  <testcase name="identifiersAcceptUuidAndPreserveEquality()" classname="com.rimworldcraft.core.api.types.SharedKernelValueObjectsTest" time="0.001"/>
+  <testcase name="identifiersRejectNull()" classname="com.rimworldcraft.core.api.types.SharedKernelValueObjectsTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

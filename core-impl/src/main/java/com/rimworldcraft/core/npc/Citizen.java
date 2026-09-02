@@ -1,6 +1,7 @@
 package com.rimworldcraft.core.npc;
 
 import com.rimworldcraft.core.api.events.*;
+import com.rimworldcraft.core.api.types.Gender;
 import com.rimworldcraft.core.api.types.*;
 import java.util.*;
 

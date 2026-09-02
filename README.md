@@ -16,9 +16,13 @@ The default build includes:
 
 - NPC aggregate: `Citizen`; identifier: `CitizenId`.
 - Position: `GridPosition` for new contracts; legacy `Position` remains for compatibility.
-- Shared value objects live in `com.rimworldcraft.core.api.types` until the planned package migration to `core.shared`.
-- Configuration envelope uses positive integer `schemaVersion`; `$schema` is metadata, not a second version field.
-- Storyteller terminology is canonical; the legacy `core.story` package remains a compatibility location for now.
+- Target Core layout: `com.rimworldcraft.core.shared`, `com.rimworldcraft.core.contracts`, and bounded contexts with `port.in`/`port.out`.
+- Current Java API location `com.rimworldcraft.core.api.ports` is migration state; new target is `com.rimworldcraft.core.ports.driving` and `core.ports.driven`.
+- Configuration uses positive integer `schemaVersion`; `$schema` is metadata, not a second version field.
+- Event envelopes contain `eventId`, `eventType`, `occurredAt`, `worldId`, `schemaVersion`, `correlationId`, optional `causationId`, and immutable `payload`.
+- Storyteller terminology/package is canonical; `core.story` is a legacy compatibility location.
+
+See `documentation-consistency-report.md` for the full terminology and contradiction inventory.
 
 ## Implemented now
 

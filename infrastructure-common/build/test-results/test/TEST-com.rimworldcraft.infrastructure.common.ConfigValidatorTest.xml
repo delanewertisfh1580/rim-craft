@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.rimworldcraft.infrastructure.common.ConfigValidatorTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-09-02T09:03:45" hostname="65dfffa5-3b1c-4bc8-a694-529d23ec377c" time="0.107">
+  <properties/>
+  <testcase name="validEnvelope_shouldPass()" classname="com.rimworldcraft.infrastructure.common.ConfigValidatorTest" time="0.104"/>
+  <testcase name="malformedJson_shouldFail()" classname="com.rimworldcraft.infrastructure.common.ConfigValidatorTest" time="0.001"/>
+  <testcase name="missingSchemaVersion_shouldFail()" classname="com.rimworldcraft.infrastructure.common.ConfigValidatorTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

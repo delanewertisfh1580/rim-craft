@@ -4,14 +4,12 @@ import com.rimworldcraft.core.api.events.*;
 import com.rimworldcraft.core.api.exceptions.InsufficientResourcesException;
 import com.rimworldcraft.core.api.types.ResourceType;
 import com.rimworldcraft.core.api.types.Position;
-import java.time.Instant;
 import java.util.*;
 
 /** Colony aggregate root; see module-colony-manager.md. */
 public final class Colony {
     private final UUID colonyId;
     private final String name;
-    private final Instant creationDate;
     private final Map<ResourceType, Integer> resources = new EnumMap<>(ResourceType.class);
     private final List<Zone> zones = new ArrayList<>();
     private final List<UUID> citizenIds = new ArrayList<>();
@@ -23,11 +21,9 @@ public final class Colony {
     public Colony(UUID colonyId, String name) {
         this.colonyId = Objects.requireNonNull(colonyId);
         this.name = requireText(name, "name");
-        this.creationDate = Instant.now();
     }
     /** Returns the colony identifier. */ public UUID getColonyId() { return colonyId; }
     /** Returns the colony name. */ public String getName() { return name; }
-    /** Returns creation time. */ public Instant getCreationDate() { return creationDate; }
     /** Returns an immutable resource snapshot. */ public Map<ResourceType, Integer> getResources() { return Map.copyOf(resources); }
     /** Returns an immutable zone snapshot. */ public List<Zone> getZones() { return List.copyOf(zones); }
     /** Returns an immutable citizen identifier snapshot. */ public List<UUID> getCitizenIds() { return List.copyOf(citizenIds); }
@@ -51,8 +47,6 @@ public final class Colony {
     /** Recalculates a bounded threat level. */
     public float updateThreatLevel() { threatLevel = Math.min(1.0f, citizenIds.size() * 0.05f); return threatLevel; }
     /** Marks the colony inactive. */ public void deactivate() { active = false; }
-    /** Placeholder serialization hook for the future persistence adapter. */ public void writeToNbt(Object tag) { throw new UnsupportedOperationException("Implement persistence adapter"); }
-    /** Placeholder deserialization hook for the future persistence adapter. */ public static Colony readFromNbt(Object tag) { throw new UnsupportedOperationException("Implement persistence adapter"); }
     private static void requirePositive(int amount) { if (amount <= 0) throw new IllegalArgumentException("amount must be positive"); }
     private static String requireText(String value, String field) { if (value == null || value.isBlank()) throw new IllegalArgumentException(field + " must not be blank"); return value; }
 }
