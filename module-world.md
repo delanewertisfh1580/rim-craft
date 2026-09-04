@@ -1,51 +1,36 @@
-# RimWorldCraft — World Context
+# World context
 
-## Scope
+**Status: PARTIAL.** The JVM model provides immutable world observations and settlement validation. Minecraft observation, chunk lifecycle and durable world persistence are not active.
 
-World Context owns bounded, platform-neutral observations needed by Core: regions, terrain, climate, hazards, resources, accessibility, spawn-entry candidates, and settlement validation. Minecraft remains the owner of the physical world; `Level`, chunks, blocks, and entities never enter Core.
+## Ownership
 
-## Canonical model
+World owns normalized region facts: terrain, climate, hazards, resources, accessibility, bounds and spawn candidates. Minecraft owns the physical `Level`, chunks, blocks and entities.
 
-Package: `com.rimworldcraft.core.world`.
+## Current code
 
-- `WorldRegion` — immutable region snapshot scoped by `WorldId` and `RegionId`;
-- `WorldSnapshot` — immutable publication boundary containing same-world regions;
-- `RegionBounds` — inclusive coordinate bounds;
-- `TerrainFacts`, `ClimateFacts`, `HazardFacts`, `ResourceFacts` — validated facts;
-- `Accessibility` — read-only accessibility result;
-- `SettlementValidationResult` — typed validation result with a diagnostic reason.
+- Models: `core-api/src/main/java/com/rimworldcraft/core/world/`.
+- Service: `core-impl/src/main/java/com/rimworldcraft/core/world/WorldContextService.java`.
+- Port: `core.ports.driven.WorldSnapshotPort`.
+- Tests: `core-impl/src/test/java/com/rimworldcraft/core/world/WorldContextTest.java`.
 
-Coordinates use shared `GridPosition`. Every positional query carries `WorldId`; a snapshot from another world is rejected.
+## Implemented behavior
 
-## Ports and flow
+- Immutable `WorldRegion` and `WorldSnapshot`.
+- Bounds, climate, terrain, hazard, resource and accessibility validation.
+- World/region key consistency checks.
+- Cross-world rejection.
+- Deterministic, side-effect-free settlement validation.
 
-`WorldSnapshotPort` is the driven Core port. Its adapter supplies immutable snapshots and may use platform observation internally. `validateSettlement` checks, in order:
+## Not complete
 
-1. world snapshot availability and world scope;
-2. position containment in a region;
-3. terrain buildability;
-4. region accessibility;
-5. hazard severity threshold.
+Minecraft/Forge/Fabric observation adapter, region discovery, weather evolution, pathfinding backend, durable snapshots, event handlers and metrics.
 
-`WorldContextService` is the application facade for snapshot reads and settlement validation.
+## Agent constraints
 
-## Invariants
+Keep `Level`, `BlockPos`, chunks, entities and loader types outside Core. Pass `WorldId` with every positional/persistence operation.
 
-- bounds have ordered minimum/maximum coordinates;
-- climate, hazard, resource, and accessibility values are bounded and validated;
-- spawn entry points belong to the region bounds;
-- all regions in a `WorldSnapshot` match both its `WorldId` and their map key;
-- published snapshots and nested collections are immutable;
-- validation has no side effects.
+## References
 
-## Configuration and persistence
-
-World configuration and durable snapshot persistence are **Pending**. The current JVM boundary is sufficient for deterministic policy tests; no Minecraft observation adapter or NBT mapping is claimed.
-
-## Evidence
-
-- `core-api/src/main/java/com/rimworldcraft/core/world/`
-- `core-api/src/main/java/com/rimworldcraft/core/ports/driven/WorldSnapshotPort.java`
-- `core-impl/src/main/java/com/rimworldcraft/core/world/WorldContextService.java`
-- `core-impl/src/test/java/com/rimworldcraft/core/world/WorldContextTest.java`
-- `world-compliance-report.md`
+- [`bounded-contexts.md`](bounded-contexts.md)
+- [`hexagonal-architecture.md`](hexagonal-architecture.md)
+- [`world-compliance-report.md`](world-compliance-report.md)

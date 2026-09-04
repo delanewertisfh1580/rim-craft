@@ -1,39 +1,24 @@
 # Persistence compliance report
 
-## Status
-
-**PARTIAL / JSON MVP.** Platform-neutral JSON persistence is implemented first. No NBT, Forge, or Minecraft runtime dependency was added.
+**Status: PARTIAL.** Active persistence is platform-neutral JSON; NBT/Forge is blocked future work.
 
 ## Implemented
 
-- `SaveDocument`, `SaveKey`, `AggregateVersion`, and canonical `SchemaVersion` usage.
-- `JsonSaveLoadPort` driven port.
-- `SnapshotMapper` and deterministic `SaveMigration`/`MigrationRegistry` contracts.
-- `JsonFileSaveAdapter` with:
-  - atomic temporary-file replacement;
-  - last-known-good copies;
-  - corrupted-file quarantine;
-  - repeated-load stability;
-  - world-scoped logical keys.
-- Removed legacy NBT persistence methods from `core.npc.Citizen`.
-- Contract tests for JSON round-trip, recovery, quarantine, idempotent repeated loads, and future-version rejection.
-- Updated `save-serialization.md` and `data-interfaces.md` references through the new JSON boundary.
+- `SaveDocument`, `SaveKey`, `AggregateVersion`, `SnapshotMapper`, `SaveMigration`, `MigrationRegistry`.
+- `JsonSaveLoadPort` and `JsonFileSaveAdapter`.
+- Atomic replacement, last-known-good fallback and corruption quarantine.
+- World-scoped logical keys and future-version rejection.
 
-## Version and recovery policy
+## Pending
 
-- Future schema versions are rejected by the migration registry.
-- Old versions can be migrated through explicit, deterministic, non-mutating steps.
-- Corrupt active files are quarantined and the last-known-good document is attempted.
-- Atomic replacement prevents partially-written active documents.
+Full context snapshot mappers/repositories, production persistence bootstrap, NBT adapter and runtime integration.
 
-## Remaining work
+## Rules
 
-Full snapshot mappers and repositories for Colony, Citizen, Storyteller, Goal AI, and Building are still pending because the current skeleton exposes incompatible legacy aggregate APIs and does not yet provide complete target models for all five contexts. NBT remains intentionally blocked until the JSON contract and mapper suite are complete.
+Aggregates do not serialize themselves. Future versions are rejected; supported old versions require deterministic migrations. Corrupt data is quarantined, never silently rewritten.
 
 ## Verification
 
 ```bash
 ./gradlew :infrastructure-common:test --no-daemon
 ```
-
-The persistence tests are included in the infrastructure-common test suite.

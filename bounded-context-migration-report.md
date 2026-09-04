@@ -1,77 +1,33 @@
-# Bounded-context and hexagonal migration report
+# Bounded-context migration report
 
 ## Status
 
-**PARTIAL** — the target Core boundaries and typed contracts are established without adding platform dependencies. Existing aggregates remain in compatibility packages where a flag-day move would break the current skeleton.
+**PARTIAL.** Typed shared values, summaries and target ports are present. Legacy aggregates/packages remain active for compatibility; platform runtime is not wired.
 
-## Completed
+## Confirmed implemented
 
-- Added target package roots:
-  - `com.rimworldcraft.core.shared`
-  - `com.rimworldcraft.core.contracts`
-  - `com.rimworldcraft.core.ports.driving`
-  - `com.rimworldcraft.core.ports.driven`
-- Added target shared facades for typed identifiers, `GameTick`, `SchemaVersion`, and `GridPosition`.
-- Added immutable cross-context summaries:
-  - `ColonySummary`
-  - `CitizenSummary`
-- Added driving ports:
-  - `CreateColonyUseCase`
-  - `AddCitizenUseCase`
-  - `ResourceOperationUseCase`
-  - `CreateBuildOrderUseCase`
-- Added driven ports:
-  - `ColonyRepository` using immutable `ColonyRecord` rather than importing the implementation aggregate
-  - `CitizenSummaryPort`
-  - `WorldObservationPort`
-  - `PathfindingPort`
-  - `EventPublicationPort`
-  - target `ClockPort`, `InventoryPort`, and `SettlementValidationPort`
-- Deprecated legacy `IBlockWorldPort`, `IPathfinderPort`, `IEventBusPort`, and `ISaveLoadPort` with migration guidance.
-- Removed persistence/NBT hooks from the `Colony` aggregate.
-- Added migration documentation and ADR:
-  - `core-migration-notes.md`
-  - `adr/0001-core-package-migration.md`
-- Updated `implementation-status.md`.
+- `core.shared` typed IDs, `GameTick`, `SchemaVersion`, `GridPosition`.
+- `core.contracts` summaries and integration contracts.
+- `core.ports.driving` and `core.ports.driven` interfaces.
+- Core isolation from Minecraft/Forge/Fabric/Baritone in source.
+- JSON `SaveDocument` boundary and target context services.
+- JVM tests for Colony, Citizen, Goal AI, Building, World, Storyteller, Player, events and JSON infrastructure.
 
-## Dependency boundary check
+## Compatibility state
 
-No Core source imports `net.minecraft`, Forge, Fabric, Baritone, or infrastructure/client packages. The active build remains platform-neutral. No Forge wiring or external coordinates were added.
-
-## Compatibility decisions
-
-The current implementation retains legacy aggregate packages (`core.colony`, `core.npc`, `core.story`, `core.goal`, `core.building`) and raw UUID/`Position` methods in old APIs. These are compatibility boundaries, not target contracts. New code must use typed IDs, `GridPosition`, summaries, immutable DTOs, events, and target ports.
-
-The existing `core.api.types` and `core.api.ports` packages remain during migration. New target shared records delegate explicitly to current API types where required; this avoids breaking existing consumers before adapters and persistence mappings are migrated.
-
-## Verification
-
-Executed from the repository root with Java 17 and Gradle 8.10.2:
-
-```bash
-./gradlew clean build --no-daemon
-```
-
-Result: **BUILD SUCCESSFUL** for active modules `core-api`, `core-impl`, and `infrastructure-common`.
-
-The build retains non-blocking warnings for exception `serialVersionUID`, deprecated compatibility ports, legacy auxiliary facade classes, repository configuration, and Gradle deprecations.
+Legacy `core.api.*`, `core.colony`, `core.npc`, `core.story`, `core.goal`, `core.building`, raw UUID and `Position` contracts remain. They are not the target for new code.
 
 ## Remaining work
 
-| Area | Status | Reason |
-|---|---|---|
-| Move all aggregates into `.domain` | PARTIAL | requires coordinated API/test migration |
-| Add application service implementations | PARTIAL | contracts exist; current behavior remains in legacy services/factories |
-| Fully type legacy events/repositories | PENDING | current event hierarchy uses UUID source IDs |
-| Remove all raw UUID and legacy Position from Core | PENDING | compatibility consumers and adapters still use them |
-| Typed persistence snapshot port | PENDING | Forge/NBT wiring is intentionally absent |
-| ArchUnit executable enforcement | PENDING | no ArchUnit dependency currently configured |
-| Forge/Minecraft adapters | BLOCKED | requires confirmed ForgeGradle/mappings and runtime wiring |
+- Move context implementation packages without breaking consumers.
+- Finish typed event envelope migration and production handlers.
+- Add full context snapshot mappers/repositories.
+- Add Forge/NBT/network/pathfinding adapters after platform decision.
+- Fix `ArchitectureTest.java` API mismatch. The earlier claim that ArchUnit was not configured is obsolete: ArchUnit is configured, but its test source currently fails to compile.
 
-## Next steps
+## Verification
 
-1. Migrate Colony aggregate and repository implementation to typed IDs and `GridPosition`, preserving overloads temporarily.
-2. Introduce a typed immutable event envelope and adapt current events at the publication boundary.
-3. Migrate Citizen and Building contracts, then Storyteller and Goal contexts.
-4. Add ArchUnit rules after package migration has enough real classes to avoid false positives.
-5. Remove deprecated compatibility ports after all active adapters and tests use target ports.
+```text
+./gradlew :core-api:test :infrastructure-common:test --no-daemon  → BUILD SUCCESSFUL
+./gradlew check --no-daemon                                      → FAILED in ArchitectureTest compilation
+```

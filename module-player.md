@@ -1,92 +1,37 @@
-# RimWorldCraft — Player Context
+# Player context
 
-## Scope
+**Status: PARTIAL.** Player authority is implemented as a normalized JVM boundary. Authentication, packet decoding, durable storage and client projections are not active.
 
-Player Context owns normalized player authority within a `WorldId`: colony membership, permissions, control mode, preferences, progression, selection, and command audit/idempotency. Authentication remains the responsibility of the external server/platform adapter.
+## Ownership
 
-## Canonical model
+Player owns world-scoped memberships, permissions, control mode, preferences, progression, selection and command receipts. External adapters own authentication and connection identity. Colony owns colony state.
 
-Package: `com.rimworldcraft.core.player`.
+## Current code
 
-- `PlayerProfile` — immutable aggregate root;
-- `ColonyMembership` — world-scoped membership projection;
-- `Permission`, `ControlMode`, `PlayerPreferences`, `ProgressionState` — immutable policy/state values;
-- `PlayerSelection` — selected colony and optional `CitizenId`, never an aggregate copy;
-- `PlayerCommandRecord` — immutable accepted/rejected command receipt;
-- `PlayerView` — read-only adapter projection;
-- `PlayerEvent` — typed Player-owned facts.
+- Models: `core-api/src/main/java/com/rimworldcraft/core/player/`.
+- Service: `core-impl/src/main/java/com/rimworldcraft/core/player/PlayerApplicationService.java`.
+- Ports: `core.ports.driving` and `core.ports.driven`.
+- Tests: `core-impl/src/test/java/com/rimworldcraft/core/player/PlayerContextTest.java`.
 
-The canonical identity is `com.rimworldcraft.core.shared.PlayerId`. Platform UUIDs are normalized before entering Core.
+## Implemented behavior
 
-## Application boundary
+- Immutable `PlayerProfile` and nested values.
+- World-scoped membership/selection checks.
+- Server-side permission checks.
+- Replay-safe accepted/rejected `CommandId` receipts.
+- Selection cleanup when leaving a colony.
+- Constructor-injected application service and deterministic clock.
 
-`PlayerApplicationService` is constructor-injected with:
+## Not complete
 
-- `PlayerProfileRepository`;
-- `ColonyMembershipQueryPort`;
-- `ClockPort`;
-- `PlayerEventPort`.
+Authentication adapter, packet normalization/bounds checks, distance/ownership/rate/stale-revision validation, durable profile mapper, event projection handlers, network/UI integration and audit retention.
 
-Driving contracts are in `com.rimworldcraft.core.ports.driving`:
+## Security rules
 
-- `RegisterPlayerUseCase`;
-- `JoinColonyUseCase`;
-- `LeaveColonyUseCase`;
-- `AuthorizePlayerCommandUseCase`;
-- `ChangeControlModeUseCase`;
-- `ChangePlayerPermissionsUseCase`;
-- `SelectPlayerTargetUseCase`;
-- `GetPlayerViewUseCase`.
+Derive actor identity from the server connection, never from client payload. Validate world, membership, permission, target and command replay before mutation. The client is never authoritative.
 
-The combined `PlayerApplicationUseCases` interface is a composition-root convenience; individual use-case contracts remain the public boundary.
+## References
 
-## Security and invariants
-
-1. A command must carry normalized `PlayerId`, `WorldId`, and `CommandId`.
-2. Every authorization decision is made server-side by Player Context.
-3. An unregistered player cannot authorize commands.
-4. A colony-scoped command requires both the requested permission and membership in the requested colony.
-5. Join is accepted only when the public `ColonyMembershipQueryPort` authorizes it.
-6. Replayed `CommandId` values return the prior accepted/rejected result and do not publish a second event.
-7. Leaving a colony removes membership and clears a selection pointing to that colony.
-8. A selection may reference only a member colony and stores IDs, not a `Colony` aggregate.
-9. Control mode changes require `CHANGE_CONTROL_MODE`.
-10. Permission changes require an actor with `MANAGE_COLONY`; target permissions replace the target set atomically.
-11. Profiles and all nested collections are immutable at the publication boundary.
-12. Domain code does not authenticate Minecraft accounts, inspect packets, or mutate platform entities.
-
-## Events
-
-`PlayerEvent` contains immutable typed facts for:
-
-- profile registration;
-- joining and leaving a colony;
-- command authorization/rejection;
-- control-mode changes;
-- selection changes;
-- permission changes.
-
-The event port does not expose repositories or foreign aggregates. Runtime event-envelope adaptation is a later boundary.
-
-## Evidence
-
-- `core-api/src/main/java/com/rimworldcraft/core/player/`
-- `core-api/src/main/java/com/rimworldcraft/core/ports/driving/`
-- `core-api/src/main/java/com/rimworldcraft/core/ports/driven/PlayerProfileRepository.java`
-- `core-api/src/main/java/com/rimworldcraft/core/ports/driven/ColonyMembershipQueryPort.java`
-- `core-api/src/main/java/com/rimworldcraft/core/ports/driven/PlayerEventPort.java`
-- `core-impl/src/main/java/com/rimworldcraft/core/player/PlayerApplicationService.java`
-- `core-impl/src/main/java/com/rimworldcraft/core/player/InMemoryPlayerProfileRepository.java`
-- `core-impl/src/test/java/com/rimworldcraft/core/player/PlayerContextTest.java`
-- `player-compliance-report.md`
-
-## Pending runtime work
-
-The active build intentionally does not include Minecraft/Forge/Fabric. The following are Pending rather than claimed complete:
-
-- authentication and packet-to-command adapter;
-- durable profile snapshot mapper/adapter;
-- event-envelope bootstrap and cross-context membership handlers;
-- network distance, ownership, target-existence, rate, and stale-revision validation;
-- client projections and UI integration;
-- production repository and audit retention policy.
+- [`bounded-contexts.md`](bounded-contexts.md)
+- [`entity-integration.md`](entity-integration.md)
+- [`player-compliance-report.md`](player-compliance-report.md)

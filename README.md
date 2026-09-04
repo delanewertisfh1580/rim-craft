@@ -1,60 +1,28 @@
 # RimWorldCraft
 
-RimWorldCraft is currently a **platform-neutral Java 17 JVM skeleton** for a future Minecraft/Forge mod. The repository establishes domain contracts and early aggregates without claiming a working Minecraft runtime.
+RimWorldCraft — Java 17 platform-neutral JVM skeleton for a future Minecraft/Forge mod. Это не готовый Minecraft runtime.
 
-## Active Gradle modules
+## Быстрый статус
 
-The default build includes:
+- Active modules: `core-api`, `core-impl`, `infrastructure-common`.
+- JVM implementations: typed shared values, ports, Colony/Citizen/Building, World, Storyteller, Player, Goal AI, event bus, JSON config/save seams.
+- Pending/blocked: Forge/Minecraft integration, NBT, Baritone, packets, rendering, durable runtime repositories and production event bootstrap.
+- Focused tests pass: `./gradlew :core-api:test :infrastructure-common:test --no-daemon`.
+- Full `./gradlew check --no-daemon` currently fails in `ArchitectureTest.java` because the checked-in ArchUnit calls do not match the configured API.
 
-- `core-api` — immutable API types, domain events, handlers, and platform-neutral ports.
-- `core-impl` — early Colony, Citizen, Storyteller, Goal, and Building implementations plus unit tests.
-- `infrastructure-common` — JSON/config validation, JSON save/repository adapters, and logging seams.
+## Для coding agents
 
-`infrastructure-forge`, `test-common`, `test-core`, and `test-integration` are present in the repository but are not active in `settings.gradle`; Forge wiring is intentionally pending confirmed ForgeGradle/mappings coordinates.
+Главные правила и индекс документов находятся в [`AGENTS.md`](AGENTS.md). Сначала прочитайте его, затем [`implementation-status.md`](implementation-status.md) и документ затронутого контекста.
 
-## Canonical terminology
+Канонические термины: `Citizen`/`CitizenId`, `GridPosition`, `WorldId`, `schemaVersion`, `core.shared`, `core.contracts`, `core.ports.driving`, `core.ports.driven`.
 
-- NPC aggregate: `Citizen`; identifier: `CitizenId`.
-- Position: `GridPosition` for new contracts; legacy `Position` remains for compatibility.
-- Target Core layout: `com.rimworldcraft.core.shared`, `com.rimworldcraft.core.contracts`, and bounded contexts with `port.in`/`port.out`.
-- Current Java API location `com.rimworldcraft.core.api.ports` is migration state; new target is `com.rimworldcraft.core.ports.driving` and `core.ports.driven`.
-- Configuration uses positive integer `schemaVersion`; `$schema` is metadata, not a second version field.
-- Event envelopes contain `eventId`, `eventType`, `occurredAt`, `worldId`, `schemaVersion`, `correlationId`, optional `causationId`, and immutable `payload`.
-- Storyteller terminology/package is canonical; `core.story` is a legacy compatibility location.
+Legacy `core.api.*` и broad context packages являются compatibility migration state. Не добавляйте новые зависимости Minecraft в Core и не выдавайте design-only документы за runtime implementation.
 
-See `documentation-consistency-report.md` for the full terminology and contradiction inventory.
-
-## Implemented now
-
-- Immutable domain events and platform-neutral ports.
-- Validated shared identifiers: `WorldId`, `ColonyId`, `CitizenId`, `PlayerId`, `RegionId`, `IncidentId`, `ContentId`, `CommandId`.
-- `GameTick`, `SchemaVersion`, and canonical `GridPosition` value objects.
-- Early Colony/Citizen/Building aggregates and platform-neutral World/Storyteller contexts with deterministic tests.
-- Player Context authority boundary with world-scoped membership, permissions, replay-safe commands, selection cleanup, and immutable Player views.
-- JSON syntax/schemaVersion validation, JSON save seams, and Storyteller/Goal AI snapshot mappers.
-- Java 17 toolchain configuration.
-
-## Known stubs and boundaries
-
-Forge/Minecraft entities, NBT round-tripping, Baritone pathfinding, packet normalization/multiplayer runtime, rendering, mod metadata, and runtime launch tasks are **Pending/Blocked** until platform wiring is explicitly requested and dependency/mappings are confirmed. The Player Context currently verifies normalized server-side commands in JVM tests; it does not authenticate accounts or decode packets. The current code must not be described as a complete Forge mod.
-
-## Build and test
-
-Use the committed wrapper when available:
+## Сборка
 
 ```bash
-./gradlew clean build --no-daemon
-./gradlew test --no-daemon
-./gradlew architectureTest --no-daemon
-./gradlew jacocoTestReport --no-daemon
+./gradlew :core-api:test :infrastructure-common:test --no-daemon
+./gradlew check --no-daemon
 ```
 
-The environment used for this stabilization did not provide a system Gradle executable, so wrapper generation/verification may remain a delivery gap if the wrapper cannot be bootstrapped locally.
-
-## Roadmap
-
-- **P0:** commit/verify Gradle 8 wrapper, split multi-public-type files, stabilize typed repositories and atomic resource reservation, add safe architecture/config/event checks.
-- **P1:** complete Player runtime adapters, migrate packages to bounded-context `port.in`/`port.out`, and add architecture/coverage baselines.
-- **P2:** confirm ForgeGradle and mappings, then implement infrastructure-forge wiring, NBT persistence, entity binding, Baritone integration, and multiplayer validation.
-
-See `implementation-status.md` for the evidence-based status matrix and limitations.
+Подробные архитектурные решения: [`system-overview.md`](system-overview.md), [`bounded-contexts.md`](bounded-contexts.md), [`hexagonal-architecture.md`](hexagonal-architecture.md).

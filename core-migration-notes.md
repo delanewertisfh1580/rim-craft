@@ -1,31 +1,30 @@
 # Core migration notes
 
-## Current-to-target map
+## Current → target
 
-| Current location | Target location | Migration state |
+| Current compatibility location | Target | Status |
 |---|---|---|
-| `core.api.types` | `core.shared` for shared values; context packages for domain values | target facades added; legacy remains |
-| `core.api.events` | `core.contracts` or owning context `event` package | pending typed envelope migration |
-| `core.api.ports` | `core.ports.driving` / `core.ports.driven` | new typed ports added; legacy ports deprecated |
-| `core.colony` | `core.colony.domain` and `core.colony.application` | staged; aggregate remains compatible |
-| `core.npc` | `core.npc.domain` and `core.npc.application` | staged; Citizen remains compatible |
-| `core.story` | `core.storyteller.domain` and `core.storyteller.application` | pending aggregate move |
-| `core.goal` | `core.goal.domain` and `core.goal.application` | pending aggregate move |
-| `core.building` | `core.building.domain` and `core.building.application` | pending aggregate move |
+| `core.api.types` | `core.shared` or owning context | PARTIAL |
+| `core.api.ports` | `core.ports.driving/driven` | PARTIAL; target ports already exist |
+| `core.api.events` | `core.contracts`/owner event package | PLANNED |
+| `core.colony`, `core.npc` | `.domain` + `.application` | PARTIAL |
+| `core.story`, `core.goal`, `core.building` | canonical context packages | PARTIAL/PLANNED |
 
-## Compatibility rules
+## Rules
 
-- Do not add new raw UUID or legacy `Position` contracts.
-- Use `ExternalIdMapper` only at external boundaries.
-- New cross-context APIs use typed IDs, summaries, immutable DTOs, events, or public ports.
-- Deprecated compatibility interfaces remain until all active adapters migrate.
-- Do not add Minecraft/Forge/Baritone dependencies to Core.
+- New APIs use typed IDs, `GridPosition`, immutable DTOs and target ports.
+- Do not add raw UUID/legacy `Position` contracts or Minecraft dependencies to Core.
+- Use boundary mappers for compatibility; do not mass-rewrite consumers in a feature change.
+- Aggregates do not serialize themselves or call repositories.
+- Keep compatibility overloads until adapters, persistence and tests migrate.
 
-## Safe migration order
+## Safe order
 
 1. Shared values and contracts.
-2. Driving/​​driven port facades.
-3. Colony repository and application services.
-4. Citizen/NPC application boundaries.
-5. Storyteller, Goal, and Building context packages.
-6. Remove deprecated facades after adapter and test migration.
+2. Driving/driven ports.
+3. Repository/application services.
+4. Context aggregate packages.
+5. Typed events and persistence mappers.
+6. Remove deprecated compatibility only after all consumers migrate.
+
+Exit requires green compile/tests, no active deprecated-port consumers, and updated `AGENTS.md`/status matrix.

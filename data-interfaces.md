@@ -1,46 +1,34 @@
-# RimWorldCraft — Data Interfaces
+# Data interfaces
 
-## Canonical Shared Kernel conventions
+## Contract rules
 
-All public Core data contracts use the canonical immutable value objects from `com.rimworldcraft.core.api.types`:
+- Public Core contracts use typed IDs, `GridPosition`, immutable DTOs and `Optional`/typed results.
+- Every world-scoped operation carries `WorldId`.
+- Repository interfaces belong to Core; implementations belong to Infrastructure.
+- Aggregates do not expose persistence methods.
+- Cross-context calls return summaries/records, not foreign aggregates.
+- Storage exceptions and JSON/NBT types do not cross into Core.
 
-- `WorldId`, `ColonyId`, `CitizenId`, `PlayerId`, `RegionId`, `IncidentId`, `CommandId` for typed identity;
-- `ContentId` for namespaced content keys;
-- `GameTick` and `SchemaVersion` for validated scalar values;
-- `GridPosition` for platform-neutral coordinates;
-- `com.rimworldcraft.core.api.types.Gender` as the sole gender enum.
+## Active contracts
 
-`Citizen`/`CitizenId` are canonical terminology. `Npc`/`NpcId` are legacy terms and must not be used in new APIs. `core.api.ports` is the current compatibility package; the target layout is `core.ports.driving`/`core.ports.driven`. External UUID and string values are converted at adapter/application boundaries through the typed mapper; they must not leak into new Core contracts.
+- Target driven ports: `core.ports.driven.*Repository`, `*Port` and `JsonSaveLoadPort`.
+- Target driving ports: `core.ports.driving.*UseCase`.
+- Persistence primitives: `SaveDocument`, `SaveKey`, `AggregateVersion`, `SnapshotMapper`, `SaveMigration`.
+- Active storage: `JsonFileSaveAdapter`; compatibility storage: `JsonSaveAdapter`.
+- In-memory repositories are test/MVP implementations, not production durability.
 
-Every world-scoped query includes `WorldId`. Cross-context APIs exchange IDs, summaries, and immutable DTOs rather than foreign aggregates. `Position` remains a compatibility type only; new contracts use `GridPosition`.
+## Adapter contract checklist
 
-## Persistence contract
+1. Validate identity, world scope and input shape.
+2. Map external representation to Core values.
+3. Perform only the requested capability.
+4. Translate external failures into a stable port result/error.
+5. Preserve atomicity, idempotency and version rules.
+6. Add contract tests for save/find/delete, missing data, corruption and replay.
 
-Platform-neutral persistence uses `com.rimworldcraft.core.persistence.SaveDocument`, `SaveKey`, `AggregateVersion`, `SnapshotMapper`, and `SaveMigration`. `JsonSaveLoadPort` is the current JSON boundary; `JsonFileSaveAdapter` performs atomic temp-file replacement, quarantine of malformed files, and last-known-good fallback. Domain aggregates do not expose persistence methods. NBT remains a future adapter only after the JSON contract is stable.
+## References
 
-## 1. Введение
-
-`data-interfaces.md` — единый источник правды для интерфейсов доступа к данным RimWorldCraft. Документ определяет контракты репозиториев, фабрик и спецификаций, но не конкретные способы хранения. Реализация может использовать NBT, JSON-файлы, память или другой backend без изменения Core.
-
-Документ развивает [`hexagonal-architecture.md`](hexagonal-architecture.md), [`bounded-contexts.md`](bounded-contexts.md), `module-colony-manager.md`, `module-npc-core.md`, `module-storyteller.md`, `module-goal-ai.md`, `module-building-system.md` и [`event-system-api.md`](event-system-api.md).
-
-### 1.1 Роль в гексагональной архитектуре
-
-Репозитории — driven ports: application/domain code требует их capabilities, а Infrastructure реализует их. Фабрики и specifications — Core contracts/policies, не зависящие от NBT, Minecraft API, файловых путей или конкретной БД.
-
-```text
-Core use case
-    -> core.*.repository / factory / specification interfaces
-    -> Infrastructure adapter
-    -> ISaveLoadPort / JSON / NBT / database
-```
-
-Правила:
-
-- интерфейсы находятся в `core.*`;
-- реализации находятся в `infrastructure.*`;
-- Core не импортирует `net.minecraft`, NBT, SQL, IO implementation или framework annotations;
-- aggregate repositories возвращают aggregate roots, а не raw records;
-- межконтекстные ссылки передаются через IDs и summaries;
-- `null` для отсутствующих результатов запрещён: используется `Optional` или typed result.
-
+- [`hexagonal-architecture.md`](hexagonal-architecture.md)
+- [`save-serialization.md`](save-serialization.md)
+- [`core-migration-notes.md`](core-migration-notes.md)
+- [`testing-strategy.md`](testing-strategy.md)

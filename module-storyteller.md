@@ -1,55 +1,34 @@
-# RimWorldCraft — Storyteller Context
+# Storyteller context
 
-## Scope
+**Status: PARTIAL.** The JVM boundary implements deterministic incident policy and snapshot mapping. Runtime incident loading, event bootstrap and Minecraft execution are not active.
 
-Storyteller Context owns narrative pressure and incident scheduling. It reads immutable Colony/NPC summaries and World snapshots, makes deterministic decisions, and emits intents. It never creates Minecraft entities or mutates Colony/NPC aggregates directly.
+## Ownership
 
-## Canonical model
+Storyteller owns threat budget, cooldowns, pacing, incident definitions, history and outcome application. It consumes immutable Colony/NPC summaries and World snapshots. It does not mutate foreign aggregates or spawn entities.
 
-Package: `com.rimworldcraft.core.storyteller`.
+## Current code
 
-- `Storyteller` — aggregate state for threat budget, cooldowns, pacing, recent incidents, and applied outcomes;
-- `IncidentDefinition` — validated configuration candidate;
-- `ThreatBudget`, `IncidentCooldowns`, `PacingState`, `IncidentRecord` — immutable state values;
-- `IncidentDecision` — `SCHEDULED`, `POSTPONED`, or `NOT_ELIGIBLE`;
-- `SpawnEntryPointRequest` — platform-neutral execution intent;
-- `IncidentOutcome` — typed result from an external executor.
+- Models: `core-api/src/main/java/com/rimworldcraft/core/storyteller/`.
+- Service/repository: `core-impl/src/main/java/com/rimworldcraft/core/storyteller/`.
+- Tests: `core-impl/src/test/java/com/rimworldcraft/core/storyteller/StorytellerContextTest.java`.
 
-The aggregate is scoped by `WorldId` and `StorytellerId`. Incident selection uses stable ID ordering before applying `RandomPort`, so a fixed random source produces reproducible results.
+## Implemented behavior
 
-## Application boundaries
+- Validated incident definitions and non-negative threat/weight constraints.
+- Stable ordering plus injected random source for deterministic selection.
+- Eligibility, cooldown, pacing and threat-budget checks.
+- Spawn-entry intent rather than entity creation.
+- Postponement when no valid entry point exists.
+- Idempotent incident outcome application.
+- JSON `SaveDocument` snapshot mapping and future-schema rejection.
 
-`StorytellerApplicationService`:
+## Not complete
 
-1. loads or creates the world-scoped aggregate;
-2. reads `StorytellerColonySummary` and `StorytellerPopulationSummary` projections;
-3. filters population, threat, cooldown, and world-hazard eligibility;
-4. performs weighted deterministic selection;
-5. scales threat from population and wealth;
-6. selects a valid immutable world entry point;
-7. persists the aggregate and submits `SpawnEntryPointRequest`.
+JSON incident loader/schema integration, durable runtime repository, production event handlers, real incident executor, full history migration and metrics.
 
-External materialization is performed by `IncidentExecutionIntentPort`. Results return through `applyOutcome`; repeated outcomes are idempotent.
+## References
 
-## Invariants
-
-- incident weights and threat values are non-negative/positive as appropriate;
-- threat spending cannot exceed the available budget;
-- cooldowns block premature repeats;
-- history is bounded by configured retention;
-- incidents without a valid world entry point are postponed with a retry tick;
-- unknown outcomes are rejected;
-- the same outcome cannot restore budget twice;
-- Storyteller has no dependency on Colony/NPC aggregate implementations or platform types.
-
-## Configuration and persistence
-
-`StorytellerConfigSnapshot` is immutable and constructor-injected. `StorytellerSnapshotMapper` persists stable state through `SaveDocument` and rejects future schema versions. JSON incident loading, durable runtime repository, event bootstrap, and Minecraft spawn adapter are **Pending**.
-
-## Evidence
-
-- `core-api/src/main/java/com/rimworldcraft/core/storyteller/`
-- `core-api/src/main/java/com/rimworldcraft/core/ports/driven/`
-- `core-impl/src/main/java/com/rimworldcraft/core/storyteller/`
-- `core-impl/src/test/java/com/rimworldcraft/core/storyteller/StorytellerContextTest.java`
-- `storyteller-compliance-report.md`
+- [`bounded-contexts.md`](bounded-contexts.md)
+- [`event-system-api.md`](event-system-api.md)
+- [`module-world.md`](module-world.md)
+- [`storyteller-compliance-report.md`](storyteller-compliance-report.md)

@@ -1,43 +1,33 @@
 # Colony compliance report
 
-## Overall status
+**Status: PARTIAL.**
 
-**PARTIAL** — the JVM-skeleton Colony aggregate now has typed identity/world scope, lifecycle guards, duplicate membership protection, atomic resource failure behavior, and constructor-injected application orchestration. The complete documented Colony module is not yet implemented.
+## Implemented evidence
 
-## Evidence
-
-| Requirement | Status | Evidence |
+| Capability | Evidence | Status |
 |---|---|---|
-| ColonyId and WorldId | DONE | `core-impl/src/main/java/com/rimworldcraft/core/colony/Colony.java` |
-| Validated ColonyName | DONE | `core-api/src/main/java/com/rimworldcraft/core/shared/ColonyName.java` |
-| Settlement site and GridPosition boundary | PARTIAL | `core-api/src/main/java/com/rimworldcraft/core/shared/SettlementSite.java`, `ColonyUseCases.java` |
-| Lifecycle and destroyed guard | DONE | `Colony.deactivate`, `ColonyInvariantTest` |
-| Typed citizen membership | DONE | `Colony.citizenIds()` and `CitizenId` overload |
-| Duplicate membership protection | DONE | `ColonyInvariantTest.duplicateMembershipIsRejected` |
-| Atomic insufficient-resource failure | DONE | `ColonyInvariantTest.insufficientReservationDoesNotPartiallyChangeResources` |
-| World settlement validation port | DONE | `core-api/.../ports/driven/SettlementValidationPort.java` |
-| Repository contract | DONE | `core-api/.../ports/driven/ColonyRepository.java` |
-| Constructor-injected application service | DONE | `ColonyApplicationService.java` |
-| Create/rename/add/remove/reserve/produce/destroy commands | PARTIAL | `ColonyUseCases.java`, `ColonyApplicationService.java` |
-| Typed event envelope and publication | PARTIAL | `ColonyEventEnvelope.java`; legacy event hierarchy remains |
-| Idempotent repeated commands | PARTIAL | aggregate removal is idempotent; processed-command store/publication deduplication is pending |
-| Work policy, zones, morale, objectives, membership metadata | PARTIAL | existing skeleton zones/value/threat only; full documented model pending |
-| NBT/Minecraft implementation | BLOCKED | intentionally excluded from active JVM build |
+| Typed Colony/World identity | `core-impl/.../core/colony/Colony.java` | IMPLEMENTED |
+| Validated name/site | `core.shared.ColonyName`, `SettlementSite` | IMPLEMENTED |
+| Membership invariants | `ColonyInvariantTest` | IMPLEMENTED |
+| Resource atomicity | `ColonyInvariantTest` | IMPLEMENTED |
+| Application boundary | `ColonyApplicationService`, `ColonyUseCases` | PARTIAL |
+| Repository contract | `core.ports.driven.ColonyRepository` | IMPLEMENTED |
+| Typed event publication | `ColonyEventEnvelope`; legacy events remain | PARTIAL |
+| Full colony policy/persistence/outbox | not active | PLANNED |
+| NBT/Minecraft runtime | not in active build | BLOCKED |
+
+## Constraints
+
+Colony owns resources and membership. It must not mutate Citizen internals or Minecraft objects directly. New code uses typed IDs, `GridPosition` and target ports.
 
 ## Verification
 
-Command executed:
-
 ```bash
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 && ./gradlew :core-api:test :core-impl:test --no-daemon
+./gradlew :core-api:test :core-impl:test --no-daemon
 ```
 
-Result: **BUILD SUCCESSFUL**. Existing warnings concern deprecated compatibility ports and auxiliary legacy facade classes.
+The command is subject to the current `ArchitectureTest.java` compile blocker when the full `core-impl:test` task recompiles tests.
 
-## Limitations and next steps
+## Next work
 
-1. Persist full aggregate snapshots rather than the current minimal repository record.
-2. Introduce a typed event publication port with correlation/causation and processed-command markers.
-3. Implement work policy, resource reservations, production operation IDs, zones with world scope, morale, objectives, and membership metadata.
-4. Add application-service tests with fake repository/world ports.
-5. Add Forge/NBT adapters only after platform coordinates and mappings are explicitly confirmed.
+Complete full policy model, command/event idempotency, snapshot persistence and runtime adapters.

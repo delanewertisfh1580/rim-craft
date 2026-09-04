@@ -1,48 +1,35 @@
-# RimWorldCraft — Colony Context
+# Colony context
 
-## Status
+**Status: PARTIAL.** The JVM skeleton contains a typed Colony aggregate and application boundary. Full colony policy, durable persistence, event bootstrap and Forge integration are not active.
 
-**PARTIAL / MVP** — the platform-neutral Colony aggregate and typed application boundary are implemented in the JVM skeleton. Full persistence, event outbox, authorization, zones/work policy, and Forge adapters remain pending.
+## Ownership
 
-## Canonical model
+`Colony` owns world-scoped identity, lifecycle, citizen membership, resources, zones, value and threat summaries. It does not own Citizen internals, Minecraft blocks, entity physics or authentication.
 
-- Aggregate: `com.rimworldcraft.core.colony.Colony`
-- Identity: `ColonyId` scoped by `WorldId`
-- Citizen membership: `CitizenId` (legacy UUID overloads remain for compatibility)
-- Site coordinates: `GridPosition`
-- Name: immutable `ColonyName`
-- Repository: `com.rimworldcraft.core.ports.driven.ColonyRepository`
-- Use-case contracts: `com.rimworldcraft.core.ports.driving.ColonyUseCases`
+## Implemented behavior
 
-The aggregate owns name, lifecycle, membership, resources, zones, value and threat summaries. It does not know repositories, serialization, Minecraft, Forge, entities, or NBT.
+- `ColonyId`, `WorldId`, `ColonyName` and `SettlementSite` validation.
+- Duplicate membership rejection and idempotent removal.
+- Destroyed-state mutation guard.
+- Positive resource mutation validation and atomic insufficient-resource failure.
+- Constructor-injected `ColonyApplicationService`.
+- Target `ColonyRepository`, driving use cases and settlement validation port.
 
-## Implemented invariants
+## Compatibility
 
-- blank/oversized colony names are rejected;
-- colony and world identities are typed;
-- duplicate citizen membership is rejected;
-- removing a missing citizen is an idempotent no-op;
-- resource amounts must be positive for mutations;
-- insufficient removal leaves the inventory unchanged;
-- destroyed colonies reject further mutations;
-- settlement validation is requested through `SettlementValidationPort`;
-- repository access is world-scoped;
-- application service dependencies are constructor-injected.
+The active implementation remains in `core-impl/.../core/colony`. Legacy UUID overloads and `core.api` types remain for migration. New code uses target shared values and ports.
 
-## Application boundary
+## Not complete
 
-`ColonyApplicationService` currently implements creation, rename, add/remove membership, resource reservation, production application and destruction using `ColonyRepository` and `SettlementValidationPort`. Commands are immutable and carry `CommandId`, typed identities, and canonical site/name types.
-
-Event publication and full command idempotency storage are intentionally not claimed yet. Existing legacy `DomainEvent` subclasses remain compatibility events and still require a future typed envelope adapter.
-
-## Configuration and persistence
-
-Canonical configuration path: `config/rimworldcraft/colony/...`; configuration parsing and persistence adapters are outside Core. Forge/NBT wiring is not active in the current build.
+Work policy, full zones/objectives/morale model, complete reservation transaction semantics, typed event publication, processed-command persistence, complete snapshot mapper, durable repository and Forge/NBT adapter.
 
 ## Tests
 
-`ColonyTest` preserves existing behavior tests. `ColonyInvariantTest` verifies duplicate membership, idempotent removal, atomic insufficient-resource failure, destroyed lifecycle, and world scoping. Additional repository contract, event envelope, authorization, work-policy, zone, and persistence tests are pending.
+`ColonyTest` and `ColonyInvariantTest` cover existing behavior, duplicate membership, idempotent removal, resource atomicity, lifecycle and world scope. Add repository/event/authorization tests when those boundaries become active.
 
-## Known limitations
+## References
 
-The skeleton still contains legacy `core.colony` APIs, compatibility UUID overloads, simplified resource ledger semantics, and no concrete implementations for work policy, morale, reservations, or event outbox. These are staged follow-up work, not implemented gameplay.
+- [`bounded-contexts.md`](bounded-contexts.md)
+- [`data-interfaces.md`](data-interfaces.md)
+- [`colony-compliance-report.md`](colony-compliance-report.md)
+- [`implementation-status.md`](implementation-status.md)

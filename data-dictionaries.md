@@ -1,74 +1,54 @@
-# RimWorldCraft — Data Dictionaries
+# Data dictionary
 
-## Canonical Shared Kernel
+## Canonical shared values
 
-The Core uses the following immutable Java 17 value objects as canonical identifiers and scalar contracts:
-
-| Concept | Canonical type | Boundary representation |
+| Concept | Canonical type | Constraint |
 |---|---|---|
-| World scope | `WorldId` | external UUID mapped at adapter boundary |
-| Colony identity | `ColonyId` | external UUID mapped at adapter boundary |
-| Citizen identity | `CitizenId` | external UUID mapped at adapter boundary |
-| Player identity | `PlayerId` | external UUID mapped at adapter boundary |
-| Region identity | `RegionId` | external UUID mapped at adapter boundary |
-| Incident identity | `IncidentId` | external UUID mapped at adapter boundary |
-| Command identity | `CommandId` | external UUID mapped at adapter boundary |
-| Content identity | `ContentId` | namespaced string, `namespace:path` |
-| Simulation time | `GameTick` | non-negative integer |
-| Schema version | `SchemaVersion` | positive integer |
-| Position | `GridPosition` | `{x,y,z}`; no Minecraft types |
-| Gender | `core.api.types.Gender` | enum value |
+| World/Colony/Citizen/Player/Region/Incident/Command identity | typed records in `core.shared` | non-null UUID |
+| Content identity | `ContentId` | namespaced string |
+| Simulation time | `GameTick` | `>= 0` |
+| Schema version | `SchemaVersion` | `> 0` |
+| Position | `GridPosition` | platform-neutral integer coordinates |
 
-`Citizen` and `CitizenId` are canonical; `Npc`/`NpcId` are legacy documentation terms. `GridPosition` is canonical; `Position` remains only as a compatibility value during migration. External UUIDs must be converted with the Core boundary mapper (`ExternalIdMapper`) before entering typed Core APIs. Typed identifiers are immutable records and reject null or invalid values in their constructors.
+New Core contracts must use these values. `core.api.types`, `Position`, `Npc` and raw UUIDs are compatibility-only.
 
-`WorldId` is always part of a world-scoped repository/query contract. Equal UUID values represent equal identifiers; different `WorldId` values never share scope implicitly.
+## Configuration envelope
 
-## 1. Введение
+Repository fixtures are under `infrastructure-common/src/main/resources/config/rwc/` and use:
 
-Этот документ является справочником конфигурационных данных RimWorldCraft. Он дополняет [`system-overview.md`](system-overview.md), [`bounded-contexts.md`](bounded-contexts.md) и [`hexagonal-architecture.md`](hexagonal-architecture.md), фиксируя контракт между Core, инфраструктурой и авторами контента.
-
-Все пользовательские настройки и контент хранятся в JSON в каталоге:
-
-```text
-config/rwc/
+```json
+{"$schema":"rwc://schemas/example.schema.json","schemaVersion":1,"data":{}}
 ```
 
-Конфиги разделены по bounded contexts. Core получает данные только через `IConfigPort`; он не читает файловую систему и не знает деталей JSON-библиотеки. В инфраструктуре размещаются discovery, parsing, JSON Schema validation, migration и публикация immutable snapshots.
+- `$schema` identifies the schema resource.
+- `schemaVersion` is the only version field.
+- Standard JSON comments are not supported.
+- Context-specific data belongs in `data`.
 
-### 1.1 Что такое схема
+## Loading policy
 
-В RimWorldCraft под схемой понимаются два взаимодополняющих контракта:
-
-1. **JSON Schema** — machine-readable контракт для IDE, CI и CLI-валидатора.
-2. **Этот справочник** — human-readable описание семантики, связей, defaults и поведения.
-
-Каждый файл имеет `$schema` и `version`. Поля с `_comment` допускаются как неисполняемые пояснения; стандартные JSON-комментарии (`//`, `/* */`) запрещены.
-
-### 1.2 Загрузка и жизненный цикл
-
-1. При старте мода `ConfigBootstrap` обнаруживает встроенные и пользовательские files.
-2. `JsonConfigAdapter` парсит JSON в raw DTO.
-3. `JsonSchemaValidator` проверяет структуру и типы.
-4. `ConfigSemanticValidator` проверяет cross-references, ranges, duplicate IDs и domain invariants.
-5. `ConfigMigrationService` переводит поддерживаемые старые версии в текущую canonical model.
-6. Валидированные данные собираются в immutable `ConfigSnapshot`.
-7. Snapshot атомарно публикуется через `IConfigPort`.
-
-Перезагрузка выполняется безопасно на lifecycle boundary, обычно серверной командой `/rwc reload` или событием resource reload:
+Target lifecycle:
 
 ```text
-read all -> parse all -> schema validate -> semantic validate -> migrate -> build snapshot -> atomic swap
+parse → schema validate → semantic validate → migrate → immutable snapshot → atomic publish
 ```
 
-Если новый snapshot невалиден, активный старый snapshot сохраняется. Частичная публикация отдельных файлов запрещена.
+The active code provides NetworkNT schema validation, diagnostics, semantic helpers, immutable snapshots and atomic publication. Full directory discovery, per-context loaders and durable last-known-good orchestration are not complete.
 
-### 1.3 Рекомендуемый механизм валидации
+## Validation rules
 
-В production используется JSON Schema draft 2020-12 через NetworkNT `json-schema-validator:1.5.6`, зафиксированный в `infrastructure-common/build.gradle`. Jackson используется только для parsing/mapping; validator не является частью Core API.
+Validate required fields, types, ranges, enums, unique IDs, cross-file references, world scope and operational limits. Invalid candidates must not replace the active snapshot.
 
-Проверки делятся на:
+## Agent rules
 
-- **структурные:** типы, required fields, enum, regex, min/max;
-- **семантические:** уникальность IDs, ссылки между файлами, отсутствие конфликтующих traits;
-- **операционные:** доступность Minecraft registry ids, совместимость версии мода, ограничения производительности prefab.
+- Reuse existing value objects and config keys.
+- Update schema, fixture, parser and tests together.
+- Document defaults, optionality, migration and failure policy.
+- Never silently accept invalid IDs, negative values or cross-world references.
 
+## References
+
+- [`AGENTS.md`](AGENTS.md)
+- [`configuration-compliance-report.md`](configuration-compliance-report.md)
+- [`configuration-mutation-testing.md`](configuration-mutation-testing.md)
+- [`implementation-status.md`](implementation-status.md)

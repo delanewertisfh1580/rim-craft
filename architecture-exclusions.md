@@ -1,8 +1,8 @@
 # Architecture exclusions registry
 
-No intentional ArchUnit exclusions are currently registered.
+**Current state:** empty.
 
-A future exclusion must include all of the following before it is used:
+No ArchUnit violation may be suppressed without:
 
 - rule ID;
 - exact class/package/dependency;
@@ -12,4 +12,4 @@ A future exclusion must include all of the following before it is used:
 - review/expiry date;
 - removal plan.
 
-Broad ignores and expired exclusions are prohibited.
+The current `ArchitectureTest.java` compilation failure is not an exclusion and must be fixed in the test source.
