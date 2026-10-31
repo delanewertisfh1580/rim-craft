@@ -1,0 +1,50 @@
+```
+# Java/Gradle build artifacts
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.7z
+*.rar
+*.gz
+*.bz2
+*.xz
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+
+# Gradle
+.gradle/
+build/
+
+# Test reports and results
+**/test-results/
+**/reports/
+
+# Temporary compilation files
+**/tmp/
+**/stash-dir/
+
+# Binary test output
+**/binary/
+
+# MANIFEST files
+**/MANIFEST.MF
+
+# Checksum and cache files
+**/checksums/
+**/fileHashes/
+**/executionHistory/
+```

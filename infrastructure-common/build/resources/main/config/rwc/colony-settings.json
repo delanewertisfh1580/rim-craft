@@ -1,5 +1,0 @@
-{
-  "schemaVersion": 1,
-  "startingResources": {"WOOD": 120, "STONE": 80, "FOOD": 40},
-  "baseThreatLevel": 0
-}

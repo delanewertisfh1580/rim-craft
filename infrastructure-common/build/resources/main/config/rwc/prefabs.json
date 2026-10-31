@@ -1,6 +1,0 @@
-{
-  "schemaVersion": 1,
-  "prefabs": [
-    {"id": "oak_wall", "width": 3, "height": 2, "depth": 1, "resource": "WOOD"}
-  ]
-}
